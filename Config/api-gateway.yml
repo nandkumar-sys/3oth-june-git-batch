@@ -1,14 +1,12 @@
 spring:
   application:
     name: api-gateway
-
   cloud:
     gateway:
       discovery:
         locator:
           enabled: true
           lower-case-service-id: true
-
       routes:
         - id: order-service
           uri: lb://order-service
@@ -16,10 +14,12 @@ spring:
             - Path=/api/place-order/**
           filters:
             - StripPrefix=2
-
-server:
-  port: 8080
-
+        - id: payment-service
+          uri: lb://payment-service
+          predicates:
+            - Path=/api/payment/**
+          filters:
+            - StripPrefix=1
 eureka:
   client:
     service-url:
@@ -27,3 +27,5 @@ eureka:
     fetch-registry: true
     register-with-eureka: true
 
+server:
+  port: 8080
